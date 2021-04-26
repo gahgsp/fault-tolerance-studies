@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(path = "/weather")
@@ -20,7 +21,7 @@ public class WeatherController {
     }
 
     @GetMapping("/{cityName}")
-    public WeatherForecast weatherForecast(@PathVariable String cityName) {
-        return weatherService.retrieveCurrentWeatherDataByCity(cityName);
+    public Mono<WeatherForecast> weatherForecast(@PathVariable String cityName) {
+        return weatherService.retrieveCurrentWeatherByCity(cityName);
     }
 }
