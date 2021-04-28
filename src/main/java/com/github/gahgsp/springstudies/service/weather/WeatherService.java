@@ -1,7 +1,6 @@
 package com.github.gahgsp.springstudies.service.weather;
 
 import com.github.gahgsp.springstudies.model.weather.WeatherForecast;
-import com.github.gahgsp.springstudies.model.weather.WeatherForecastException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +18,9 @@ import static com.github.gahgsp.springstudies.configuration.CachingConfiguration
 @Service
 public class WeatherService {
 
+    @Value("${openweather.api.key}")
+    private String apiKey;
+
     @Autowired
     @Qualifier(LONG_TERM_CACHE)
     private CacheManager cacheManager;
@@ -27,9 +29,6 @@ public class WeatherService {
     private WeatherFallbackService weatherFallbackService;
 
     private final WebClient webClient;
-
-    @Value("${openweather.api.key}")
-    private String apiKey;
 
     public WeatherService() {
         this.webClient = WebClient.builder()
@@ -48,6 +47,5 @@ public class WeatherService {
                 .doOnSuccess(weatherForecast -> weatherFallbackService.addWeatherDataToFallbackCache(cityName, weatherForecast))
                 .onErrorResume(ex -> weatherFallbackService.retrieveWeatherFromFallback(cityName));
     }
-
 
 }
